@@ -1,0 +1,32 @@
+{
+  "name": "impulsejs",
+  "version": "0.0.0",
+  "author": "phaux <phaux4@gmail.com>",
+  "description": "Yet another Observable implementation",
+  "repository": "phaux/impulse",
+  "license": "ISC",
+  "keywords": [
+    "observable",
+    "frp"
+  ],
+  "main": "dist/index.js",
+  "module": "module/index.js",
+  "typings": "module/index.d.ts",
+  "scripts": {
+    "prepare": "run-p -l -s prepare:*",
+    "prepare:module": "tsc -p . -m es2015 -t es2017 --outDir module",
+    "prepare:umd": "tsc -p . -m umd -t es2015 --outDir dist",
+    "test": "run-s -s test:*",
+    "test:lint": "tslint -p .",
+    "test:unit": "node test.js",
+    "watch": "run-p -l -s watch:**",
+    "watch:prepare:module": "tsc -w -p . -m es2015 -t es2017 --outDir module",
+    "watch:prepare:umd": "tsc -w -p . -m umd -t es2015 --outDir dist"
+  },
+  "devDependencies": {
+    "es-observable-tests": "^0.3.0",
+    "npm-run-all": "^4.1.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3"
+  }
+}
