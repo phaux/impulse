@@ -16,6 +16,7 @@
     "prepare": "run-p -l -s prepare:*",
     "prepare:module": "tsc -p . -m es2015 -t es2017 --outDir module",
     "prepare:umd": "tsc -p . -m umd -t es2015 --outDir dist",
+    "prepublishOnly": "npm test",
     "test": "run-s -s test:*",
     "test:lint": "tslint -p .",
     "test:unit": "node test.js",
