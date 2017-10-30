@@ -13,11 +13,11 @@
   "module": "module/index.js",
   "typings": "module/index.d.ts",
   "scripts": {
-    "prepare": "run-p -l -s prepare:*",
+    "prepare": "run-p -l prepare:*",
     "prepare:module": "tsc -p . -m es2015 -t es2017 --outDir module",
     "prepare:umd": "tsc -p . -m umd -t es2015 --outDir dist",
     "prepublishOnly": "npm test",
-    "test": "run-s -s test:*",
+    "test": "run-s test:*",
     "test:lint": "tslint -p .",
     "test:unit": "node test.js",
     "watch": "run-p -l -s watch:**",
