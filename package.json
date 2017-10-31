@@ -19,7 +19,7 @@
     "prepublishOnly": "npm test",
     "test": "run-s test:*",
     "test:lint": "tslint -p .",
-    "test:unit": "node test.js",
+    "test:unit": "node test/index.js",
     "watch": "run-p -l -s watch:**",
     "watch:prepare:module": "tsc -w -p . -m es2015 -t es2017 --outDir module",
     "watch:prepare:umd": "tsc -w -p . -m umd -t es2015 --outDir dist"
