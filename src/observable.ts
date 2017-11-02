@@ -1,6 +1,8 @@
 import { IObservable, IObserver, IntoObservable } from './types.js'
 import { ObservableCore } from './observable-core.js'
 import { Subscription } from './subscription.js'
+import { Emitter } from './emitter'
+import { Subject } from './subject'
 
 export class Observable<T>
   extends ObservableCore<T>
@@ -146,19 +148,20 @@ export class Observable<T>
     })
   }
 
-  // share(): Observable<T> {
-  //   const emitters: Emitter<T>[] = []
-  //   let n = 0
-  //   let sub: Subscription | undefined
-  //   return new Observable(emit => {
-  //     const $sub = $.subscribe(emit)
-  //     if (n++ == 0) sub = this.subscribe($)
-  //     return () => {
-  //       if (--n == 0) sub!.unsubscribe()
-  //       $sub.unsubscribe()
-  //     }
-  //   })
-  // }
+  share(): Observable<T> {
+    const emitters: Array<Emitter<T>> = []
+    let n = 0
+    let sub: Subscription | undefined
+    const $ = new Subject<T>()
+    return new Observable(emit => {
+      const $sub = $.subscribe(emit)
+      if (n++ == 0) sub = this.subscribe($)
+      return () => {
+        if (--n == 0) sub!.unsubscribe()
+        $sub.unsubscribe()
+      }
+    })
+  }
 
   map<U>(fn: (val: T) => U): Observable<U> {
     return new Observable<U>(emit => this.subscribe({
@@ -265,30 +268,30 @@ export class Observable<T>
     })
   }
 
-  // repeat(fn: (complete$: Observable<any>) => IntoObservable<any>): Observable<T> {
-  //   return new Observable(emit => {
-  //     const complete$ = new Subject
-  //     const resub = () => this.subscribe({
-  //       next: val => emit.next(val),
-  //       error: err => emit.error(err),
-  //       complete: val => complete$.next(val),
-  //     })
-  //     const repeat$ = Observable.from(fn(complete$))
-  //     let sub: Subscription | null = null
-  //     repeat$.subscribe({
-  //       next: () => {
-  //         if (sub) sub.unsubscribe()
-  //         sub = resub()
-  //       },
-  //       error: err => emit.error(err),
-  //       complete: val => emit.complete(val),
-  //     })
-  //     if (!sub) sub = resub()
-  //     return () => {
-  //       if (sub) sub.unsubscribe()
-  //     }
-  //   })
-  // }
+  repeat(fn: (complete$: Observable<any>) => IntoObservable<any>): Observable<T> {
+    return new Observable(emit => {
+      const complete$ = new Subject<any>()
+      const resub = () => this.subscribe({
+        next: val => emit.next(val),
+        error: err => emit.error(err),
+        complete: val => complete$.next(val),
+      })
+      const repeat$ = Observable.from(fn(Observable.from(complete$)))
+      let sub: Subscription | null = null
+      repeat$.subscribe({
+        next: () => {
+          if (sub) sub.unsubscribe()
+          sub = resub()
+        },
+        error: err => emit.error(err),
+        complete: val => emit.complete(val),
+      })
+      if (!sub) sub = resub()
+      return () => {
+        if (sub) sub.unsubscribe()
+      }
+    })
+  }
 
   switchMap<U>(fn: (val: T) => Observable<U>, max?: number): Observable<U>
   switchMap<U>(fn: (val: T) => Promise<U>, max?: number): Observable<U>

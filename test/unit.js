@@ -29,6 +29,13 @@ const TESTS = {
         assert.deepEqual(arr, [2])
       ),
 
+  'repeat 3 times': () =>
+    Observable.of(1)
+      .repeat(end$ => end$.take(3))
+      .scan(0, (a, b) => a + b)
+      .toPromise()
+      .then(x => assert.equal(x, 4))
+
 }
 
 async function run() {
