@@ -89,6 +89,17 @@ export class Observable<T> implements IObservable<T> {
 
   // Non-standard methods
 
+  toArray(): Promise<T[]> {
+    return new Promise((resolve, reject) => {
+      const arr: T[] = []
+      this.subscribe({
+        next: val => arr.push(val),
+        error: err => reject(err),
+        complete: () => resolve(arr),
+      })
+    })
+  }
+
   static empty(): Observable<never> {
     return new Observable(emit => { emit.complete() })
   }
