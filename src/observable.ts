@@ -17,6 +17,23 @@ export class Observable<T>
     return super.from.call(Ctor, $)
   }
 
+  toPromise(): Promise<T> {
+    return new Promise((resolve, reject) => {
+      let empty = true
+      let value: T
+      this.subscribe({
+        next: val => {
+          empty = false
+          value = val
+        },
+        error: err => reject(err),
+        complete: () => {
+          if (!empty) resolve(value)
+          else reject(new Error(`Can't convert empty Observable to Promise`))
+        },
+      })
+    })
+  }
   toArray(): Promise<T[]> {
     return new Promise((resolve, reject) => {
       const arr: T[] = []
