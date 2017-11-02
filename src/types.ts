@@ -1,22 +1,27 @@
 import { Emitter } from './emitter.js'
-import { Subscription } from './subscription.js'
 
 export type Subscriber<T> =
-  (emit: Emitter<T>) => ISubscription | void | (() => void)
+  (emit: Emitter<T>) => Unsubscriber
+
+export type Unsubscriber =
+  | { unsubscribe(): void }
+  | (() => any)
+  | void
 
 export interface ISubscription {
   unsubscribe(): void
+  readonly closed: boolean
 }
 
-export interface Observer<T> {
-  start?(sub: Subscription): any
+export interface IObserver<T> {
+  start?(sub: ISubscription): any
   next?(val: T): any
   error?(err: Error): any
   complete?(val?: any): any
 }
 
 export interface IObservable<T> {
-  subscribe(observer: Observer<T>): ISubscription
+  subscribe(observer: IObserver<T>): ISubscription
   subscribe(
     next: (val: T) => any,
     error?: (err: Error) => void,

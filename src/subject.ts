@@ -1,10 +1,10 @@
 import { Observable } from './observable.js'
-import { IObservable, Observer } from './types.js'
+import { IObservable, IObserver } from './types.js'
 import { Emitter } from './emitter.js'
 
 export class Subject<T>
   extends Observable<T>
-  implements IObservable<T>, Observer<T>
+  implements IObservable<T>, IObserver<T>
 {
 
   private _emitters: Array<Emitter<T>> = []

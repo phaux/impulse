@@ -1,4 +1,4 @@
-import { Subscriber, IObservable, Observer, IntoObservable } from './types.js'
+import { Subscriber, IObservable, IObserver, IntoObservable } from './types.js'
 import { Subscription } from './subscription.js'
 import { Emitter } from './emitter.js'
 
@@ -12,8 +12,14 @@ export class Observable<T> implements IObservable<T> {
     this._subscriber = subscriber
   }
 
+  subscribe(observer: IObserver<T>): Subscription
   subscribe(
-    next: ((val: T) => any) | Observer<T>,
+    next: (val: T) => any,
+    error?: (err: Error) => void,
+    complete?: (val: any) => void,
+  ): Subscription
+  subscribe(
+    next: ((val: T) => any) | IObserver<T>,
     error?: (err: Error) => any,
     complete?: (val: any) => any,
   ): Subscription {

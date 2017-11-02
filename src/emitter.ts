@@ -1,13 +1,13 @@
-import { Observer } from './types.js'
+import { IObserver } from './types.js'
 import { Subscription } from './subscription.js'
 
 export class Emitter<T> {
 
-  private _observer: Observer<T>
+  private _observer: IObserver<T>
   private _closed: boolean
   _subscription?: Subscription
 
-  constructor(observer: Observer<T>) {
+  constructor(observer: IObserver<T>) {
     this._observer = observer
     this._closed = false
   }
