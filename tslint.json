@@ -38,6 +38,7 @@
       }
     ],
     "triple-equals": false,
+    "unified-signatures": false,
     "variable-name": false
   }
 }

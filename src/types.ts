@@ -32,4 +32,4 @@ export interface IObservable<T> {
 export type IntoObservable<T> =
   | IObservable<T>
   | Promise<T>
-  | Iterable<T>
+  | T[]

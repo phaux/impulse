@@ -140,6 +140,9 @@ export class Observable<T> implements IObservable<T> {
     })
   }
 
+  static merge<T>(...$s: Array<Observable<T>>): Observable<T>
+  static merge<T>(...$s: Array<Promise<T>>): Observable<T>
+  static merge<T>(...$s: T[][]): Observable<T>
   static merge<T>(...$s: Array<IntoObservable<T>>): Observable<T> {
     return new Observable(emit => {
       const subs: Subscription[] = []
@@ -331,6 +334,9 @@ export class Observable<T> implements IObservable<T> {
   //   })
   // }
 
+  switchMap<U>(fn: (val: T) => Observable<U>, max?: number): Observable<U>
+  switchMap<U>(fn: (val: T) => Promise<U>, max?: number): Observable<U>
+  switchMap<U>(fn: (val: T) => U[], max?: number): Observable<U>
   switchMap<U>(fn: (val: T) => IntoObservable<U>, max = 1): Observable<U> {
     return new Observable(emit => {
 
