@@ -31,6 +31,9 @@ export class Observable<T> implements IObservable<T> {
 
     const subscription = new Subscription()
     const emitter = new Emitter(observer)
+    emitter.next = emitter.next.bind(emitter)
+    emitter.error = emitter.error.bind(emitter)
+    emitter.complete = emitter.complete.bind(emitter)
 
     try {
       if (observer.start) observer.start(subscription)
