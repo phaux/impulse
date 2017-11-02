@@ -1,93 +1,21 @@
-import { Subscriber, IObservable, IObserver, IntoObservable } from './types.js'
+import { IObservable, IObserver, IntoObservable } from './types.js'
+import { ObservableCore } from './observable-core.js'
 import { Subscription } from './subscription.js'
-import { Emitter } from './emitter.js'
 
-export class Observable<T> implements IObservable<T> {
-
-  private _subscriber: Subscriber<T>
-
-  constructor(subscriber: Subscriber<T>) {
-    if (typeof subscriber != 'function')
-      throw new TypeError(`Subscriber must be a function`)
-    this._subscriber = subscriber
-  }
-
-  subscribe(observer: IObserver<T>): Subscription
-  subscribe(
-    next: (val: T) => any,
-    error?: (err: Error) => void,
-    complete?: (val: any) => void,
-  ): Subscription
-  subscribe(
-    next: ((val: T) => any) | IObserver<T>,
-    error?: (err: Error) => any,
-    complete?: (val: any) => any,
-  ): Subscription {
-
-    let observer
-    if (typeof next == 'function') observer = {next, error, complete}
-    else if (next && typeof next == 'object') observer = next
-    else throw new TypeError(`Invalid observer type`)
-
-    const subscription = new Subscription()
-    const emitter = new Emitter(observer)
-    emitter.next = emitter.next.bind(emitter)
-    emitter.error = emitter.error.bind(emitter)
-    emitter.complete = emitter.complete.bind(emitter)
-
-    try {
-      if (observer.start) observer.start(subscription)
-      if (!subscription.closed) {
-        const unsubscriber = this._subscriber(emitter)
-        subscription._setUnsubscriber(unsubscriber)
-        emitter._subscription = subscription
-        if (emitter.closed) subscription.unsubscribe()
-      }
-    }
-    catch (err) { emitter.error(err) }
-
-    return subscription
-
-  }
+export class Observable<T>
+  extends ObservableCore<T>
+  implements IObservable<T>
+{
 
   static of<T>(...xs: T[]): Observable<T> {
-    return new Observable(observer => {
-      for (const item of xs) observer.next(item)
-      observer.complete()
-    })
+    const Ctor = typeof this == 'function' ? this : Observable
+    return super.of.call(Ctor, ...xs)
   }
 
   static from<T>($: IntoObservable<T>): Observable<T> {
-    if ($ instanceof Observable) {
-      return $
-    }
-    if ($ && typeof ($ as IObservable<T>).subscribe == 'function') {
-      return new Observable(emit =>
-        ($ as IObservable<T>).subscribe(emit)
-      )
-    }
-    else if ($ && typeof ($ as Iterable<T>)[Symbol.iterator] == 'function') {
-      return new Observable(emit => {
-        for (const item of $ as Iterable<T>) emit.next(item)
-        emit.complete()
-      })
-    }
-    else if ($ && typeof ($ as Promise<T>).then == 'function') {
-      return new Observable(emit => {
-        ($ as Promise<T>)
-          .then(val => {
-            emit.next(val)
-            emit.complete()
-          })
-          .catch(err => {
-            emit.error(err)
-          })
-      })
-    }
-    else throw new TypeError(`Invalid argument`)
+    const Ctor = typeof this == 'function' ? this : Observable
+    return super.from.call(Ctor, $)
   }
-
-  // Non-standard methods
 
   toArray(): Promise<T[]> {
     return new Promise((resolve, reject) => {

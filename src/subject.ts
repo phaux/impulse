@@ -1,9 +1,9 @@
-import { Observable } from './observable.js'
+import { ObservableCore } from './observable-core'
 import { IObservable, IObserver } from './types.js'
 import { Emitter } from './emitter.js'
 
 export class Subject<T>
-  extends Observable<T>
+  extends ObservableCore<T>
   implements IObservable<T>, IObserver<T>
 {
 
