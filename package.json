@@ -17,15 +17,18 @@
     "prepare:module": "tsc -p . -m es2015 -t es2017 --outDir module",
     "prepare:umd": "tsc -p . -m umd -t es2015 --outDir dist",
     "prepublishOnly": "npm test",
-    "test": "run-s test:*",
-    "test:lint": "tslint -p .",
-    "test:unit": "node test/upstream.js && node test/unit.js",
+    "test": "run-s test:**",
+    "test:lint:ts": "tslint -p .",
+    "test:lint:js": "eslint test",
+    "test:spec": "node test/spec.js",
+    "test:unit": "node test/unit.js",
     "watch": "run-p -l -s watch:**",
     "watch:prepare:module": "tsc -w -p . -m es2015 -t es2017 --outDir module",
     "watch:prepare:umd": "tsc -w -p . -m umd -t es2015 --outDir dist"
   },
   "devDependencies": {
     "es-observable-tests": "^0.3.0",
+    "eslint": "^4.10.0",
     "npm-run-all": "^4.1.1",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"

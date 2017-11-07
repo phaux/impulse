@@ -195,21 +195,27 @@ export class Observable<T>
   }
 
   take(n: number): Observable<T> {
-    return new Observable(emit => this.subscribe({
-      next: val => {
-        if (--n < 0) emit.complete()
-        else emit.next(val)
-      },
-      error: err => emit.error(err),
-      complete: val => emit.complete(val),
-    }))
+    return new Observable(emit => {
+      let i = n
+      return this.subscribe({
+        next: val => {
+          if (--i < 0) emit.complete()
+          else emit.next(val)
+        },
+        error: err => emit.error(err),
+        complete: val => emit.complete(val),
+      })
+    })
   }
   skip(n: number): Observable<T> {
-    return new Observable(emit => this.subscribe({
-      next: val => { if (--n < 0) emit.next(val) },
-      error: err => emit.error(err),
-      complete: val => emit.complete(val),
-    }))
+    return new Observable(emit => {
+      let i = n
+      return this.subscribe({
+        next: val => { if (--i < 0) emit.next(val) },
+        error: err => emit.error(err),
+        complete: val => emit.complete(val),
+      })
+    })
   }
 
   startWith(value: T): Observable<T> {
