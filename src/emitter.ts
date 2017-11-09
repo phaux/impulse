@@ -15,7 +15,7 @@ export class Emitter<T> {
   next(val: T) {
     if (this._closed) return
     try {
-      const next = this._observer.next
+      const {next} = this._observer
       if (next) return next.call(this._observer, val)
     }
     catch (err) { this.error(err) }
@@ -25,7 +25,7 @@ export class Emitter<T> {
     if (this._closed) throw err
     this._closed = true
     try {
-      const error = this._observer.error
+      const {error} = this._observer
       if (error) return error.call(this._observer, err)
       else throw error
     }
@@ -36,7 +36,7 @@ export class Emitter<T> {
     if (this._closed) return
     this._closed = true
     try {
-      const complete = this._observer.complete
+      const {complete} = this._observer
       if (complete) return complete.call(this._observer, val)
     }
     catch (err) { this.error(err) }
