@@ -32,4 +32,5 @@ export interface IObservable<T> {
 export type IntoObservable<T> =
   | IObservable<T>
   | Promise<T>
-  | T[]
+  | AsyncIterable<T>
+  | Iterable<T>

@@ -2,6 +2,7 @@
   "extends": "tslint:recommended",
   "rules": {
     "align": [true, "statements", "members", "elements"],
+    "array-type": false,
     "arrow-parens": [true, "ban-single-arg-parens"],
     "curly": false,
     "interface-name": false,

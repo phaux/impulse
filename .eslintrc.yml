@@ -24,7 +24,6 @@ rules:
   linebreak-style: error
   max-depth: [error, 3]
   max-len: [error, 80, 4]
-  max-statements: [error, 15]
   new-cap: error
   no-caller: error
   no-console: off
